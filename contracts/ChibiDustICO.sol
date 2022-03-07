@@ -18,7 +18,7 @@ contract ChibiDustICO is Ownable{
         ChibiDust = IERC20(_dust);
     }
 
-    uint[] public unlockTimes = [1649289600,1651881600,1654560000,1657152000];
+    uint[] public unlockTimes = [1649289600,1657152000];
 
     function buyDust() external payable{
         require(msg.value > 0,"Can't buy 0 tokens");
@@ -39,11 +39,7 @@ contract ChibiDustICO is Ownable{
         if(block.timestamp < unlockTimes[0]){
             return 0;
         }else if(block.timestamp < unlockTimes[1]){
-            return 25*userBought[_user]/100;
-        }else if(block.timestamp < unlockTimes[2]){
-            return 50*userBought[_user]/100;
-        }else if(block.timestamp < unlockTimes[3]){
-            return 75*userBought[_user]/100;
+            return userBought[_user]*(block.timestamp-unlockTimes[0])/(unlockTimes[1]-unlockTimes[0]);
         }else{
             return userBought[_user];
         }
