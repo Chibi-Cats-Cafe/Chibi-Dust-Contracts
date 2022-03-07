@@ -19,9 +19,12 @@ contract ChibiDustICO is Ownable{
     uint TOTAL = 15_000_000;
     uint8 countsRetrieved;
 
-    constructor(address _dust,members[5] memory team){
+    constructor(address _dust,address[5] memory teamAddress,uint[5] memory shares){
         ChibiDust = IERC20(_dust);
-        teamMembers = team;
+        for(uint i=0;i<5;i++){
+            teamMembers[i] = members(teamAddress[i],shares[i]);
+        }
+        
     }
 
     function retrieveSalary() external onlyOwner{
