@@ -57,6 +57,10 @@ contract ChibiDustICO is Ownable{
         ChibiDust.transfer(msg.sender,ChibiDust.balanceOf(address(this))-boughtTotal);
     }
 
+    function recoverONE() external onlyOwner{
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
     function changeDustAddress(address _newDust) external onlyOwner{
         ChibiDust = IERC20(_newDust);
     }
