@@ -16,7 +16,7 @@ contract ChibiTeamVesting is Ownable{
     
     members[5] public teamMembers;
     uint[] unlockTime = [1646611200,1649289600,1651881600,1654560000,1657152000,1659830400,1662508800,1665100800];
-    uint TOTAL = 15_000_000;
+    uint TOTAL = 15_000_000 ether;
     uint8 countsRetrieved;
 
     constructor(address _dust,address[5] memory teamAddress,uint[5] memory shares){
