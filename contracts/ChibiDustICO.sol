@@ -39,6 +39,7 @@ contract ChibiDustICO is Ownable{
     function buyDust() external payable isNotPaused{
         require(msg.value > 0,"Can't buy 0 tokens");
         require(block.timestamp < endTime,"ICO Expired"); //1st April 12 AM UTC
+        require(ChibiDust.balanceOf(address(this))-boughtTotal > 0,"No more tokens left to sell");
         boughtTotal += msg.value;
         userBought[msg.sender] += msg.value;
     }
