@@ -9,10 +9,15 @@ contract ChibiDustICO is Ownable{
 
     IERC20 ChibiDust;
 
-    uint boughtTotal;
+    uint public boughtTotal;
+    uint public endTime = 1648771200;
 
-    mapping(address=>uint) userBought;
-    mapping(address=>uint) userClaimed;
+    address cgAddress;
+
+    bool public isPaused;
+
+    mapping(address=>uint) public userBought;
+    mapping(address=>uint) public userClaimed;
 
     constructor(address _dust){
         ChibiDust = IERC20(_dust);
@@ -20,9 +25,20 @@ contract ChibiDustICO is Ownable{
 
     uint[] public unlockTimes = [1649289600,1657152000];
 
-    function buyDust() external payable{
+    modifier isNotPaused{
+        require(!isPaused,"Execution paused");
+        _;
+    }
+
+    modifier onlyCg{
+        require(msg.sender ==  cgAddress,"Sender not cg");
+        require(cgAddress != address(0),"cg address not set");
+        _;
+    }
+
+    function buyDust() external payable isNotPaused{
         require(msg.value > 0,"Can't buy 0 tokens");
-        require(block.timestamp < 1648771200,"ICO Expired"); //1st April 12 AM UTC
+        require(block.timestamp < endTime,"ICO Expired"); //1st April 12 AM UTC
         boughtTotal += msg.value;
         userBought[msg.sender] += msg.value;
     }
@@ -49,16 +65,32 @@ contract ChibiDustICO is Ownable{
         return (amountUnlocked(_user)-userClaimed[_user]);
     }
 
-    function recoverDust() external onlyOwner{
+    function recoverDust() external onlyCg{
         ChibiDust.transfer(msg.sender,ChibiDust.balanceOf(address(this))-boughtTotal);
     }
 
-    function recoverONE() external onlyOwner{
+    function recoverONE() external onlyCg{
         payable(msg.sender).transfer(address(this).balance);
     }
 
     function changeDustAddress(address _newDust) external onlyOwner{
         ChibiDust = IERC20(_newDust);
+    }
+
+    function editEndTime(uint _time) external onlyOwner{
+        endTime = _time;
+    } 
+
+    function updateCgAddress(address _cgAddress) external onlyOwner{
+        cgAddress = _cgAddress;
+    }
+
+    function claimStartEnd(uint index,uint _time) external onlyOwner{
+        unlockTimes[index] = _time;
+    }
+
+    function pauseContract(bool _pause) external onlyOwner{
+        isPaused = _pause;
     }
 
 }

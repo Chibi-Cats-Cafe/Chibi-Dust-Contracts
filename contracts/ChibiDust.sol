@@ -9,10 +9,10 @@ contract ChibiDust is ERC20,Ownable{
 
     uint public MAX_SUPPLY = 100_000_000 ether;
 
-    constructor() ERC20("Chibi Dust","$DUST"){}
+    constructor() ERC20("Chibi Dust","DUST"){}
 
     function mint(uint amount) external onlyOwner{
-        require(totalSupply() + amount < MAX_SUPPLY,"Can't exceed max supply");
+        require(totalSupply() + amount <= MAX_SUPPLY,"Can't exceed max supply");
         _mint(msg.sender,amount);
     }
 
